@@ -1,5 +1,28 @@
 <?php
     include __DIR__."/partials/vars.php";
+
+    $filtered_hotels= $hotels;
+
+    if(isset($_GET['parcheggio'])){
+        $parcheggio= $_GET['parcheggio'];
+
+        if($parcheggio == 'true'){
+            $parcheggio= true;
+        }
+        else{
+            $parcheggio= false;
+        }
+
+        $temphotels=[];
+        foreach($filtered_hotels as $hotel){
+            if($hotel['parking'] == $parcheggio){
+                $temphotels[]=$hotel;
+            }
+        }
+        $filtered_hotels= $temphotels;  
+    }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,21 +40,31 @@
     <main>
         <div class="container">
             <div class="row">
+                <div class="col">
+                    <form action="index.php">
+                        <select name="parcheggio" id="parcheggio">
+                            <option value="">Seleziona se vuoi vedere i risultati con o senza parcheggio</option>
+                            <option value="true">Si</option>
+                            <option value="false">No</option>
+                        </select>
+                        <button type="submit">Cerca</button>
+                    </form>
+                </div>
                 <div class="col-12">
                 <table class="table table-striped ">
                     <thead>
                         <tr>
-                            <?php foreach($hotels[0] as $key => $hotel) { ?>
+                            <?php foreach($filtered_hotels[0] as $key => $hotel) { ?>
                                 <th scope="col"> <?php echo str_replace("_", " ",ucfirst($key));?> </th>
                             <?php } ?>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($hotels as $hotel){ ?> 
+                        <?php foreach($filtered_hotels as $hotel){ ?> 
                             <tr>
                                 <th> <?php echo $hotel['name']; ?></th>
                                 <td> <?php echo $hotel['description']; ?></td>
-                                <td> <?php echo $hotel['parking'] ?'yes':'no' ; ?></td>
+                                <td> <?php echo $hotel['parking'] ?'Yes':'No' ; ?></td>
                                 <td> <?php echo $hotel['vote']; ?></td>
                                 <td> <?php echo $hotel['distance_to_center']; ?></td>
                             </tr>    
