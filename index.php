@@ -1,17 +1,24 @@
 <?php
     include __DIR__."/partials/vars.php";
 
+    /* visualizziamo tutti gli hotel se non è presente nessun dato in input */
     $filtered_hotels= $hotels;
 
+    /* se è presente un dato in input allora eseguiamo i seguenti filtraggi */
+    /* filtraggio del parcheggio */
     if(isset($_GET['parcheggio'])){
         $parcheggio= $_GET['parcheggio'];
 
+        /* se in input del parcheggio è impostato tutti facciamo vedere tutti gli hotel */
         if($parcheggio=='tutti'){
             $filtered_hotels= $hotels;
         }
+
+        /* altrimenti verifichiamo se in input è specificato che si vuole con parcheggio o senza */
         else{
             $temphotels=[];
 
+            /* transformiamo il valore da stringa in booleano */
             if($parcheggio == 'true'){
                 $parcheggio= true;
             }
@@ -19,17 +26,33 @@
                 $parcheggio= false;
             }
 
+            /* eseguiamo un ciclo che andra ad aggiungere gli hotel con le caratteristiche impostata in 
+               input in un array provvisorio  */
             foreach($filtered_hotels as $hotel){
                 if($hotel['parking'] == $parcheggio){
                     $temphotels[]=$hotel;
                 }    
             }  
+
             $filtered_hotels= $temphotels;  
-        }
-        
+        }  
     }
 
 
+    /* filtraggio per voto */
+    if(isset($_GET['stelle'])){
+        $stelle= $_GET['stelle'];
+        $temphotels=[];
+
+         /* eseguiamo un ciclo che andra ad aggiungere gli hotel con le caratteristiche impostata in 
+            input in un array provvisorio  */
+            foreach($filtered_hotels as $hotel){
+                if($hotel['vote'] >= $stelle){
+                    $temphotels[]=$hotel;
+                }    
+            }  
+            $filtered_hotels= $temphotels;  
+        }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,19 +71,20 @@
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <form action="index.php">
+                    <!-- form per gli imput -->
+                    <form action="index.php" class="my-4">
                         <label for="parcheggio">Seleziona se vuoi vedere i risultati con o senza parcheggio</label>
-                            <select name="parcheggio" id="parcheggio">
-                                <option value="tutti">Tutti</option>
-                                <option value="true">Si</option>
-                                <option value="false">No</option>       
-                            </select>
-                        
-                        
+                        <select name="parcheggio" id="parcheggio">
+                            <option value="tutti">Tutti</option>
+                            <option value="true">Si</option>
+                            <option value="false">No</option>       
+                        </select> <br>
+                        <input type="number" placeholder="numero di stelle" name="stelle" id="stars" max="5" class="my-2">
                         <button type="submit">Cerca</button>
                     </form>
                 </div>
                 <div class="col-12">
+                    <!-- table di visualizazzione -->
                 <table class="table table-striped ">
                     <thead>
                         <tr>
