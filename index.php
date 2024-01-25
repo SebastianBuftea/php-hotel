@@ -6,20 +6,27 @@
     if(isset($_GET['parcheggio'])){
         $parcheggio= $_GET['parcheggio'];
 
-        if($parcheggio == 'true'){
-            $parcheggio= true;
+        if($parcheggio=='tutti'){
+            $filtered_hotels= $hotels;
         }
         else{
-            $parcheggio= false;
-        }
+            $temphotels=[];
 
-        $temphotels=[];
-        foreach($filtered_hotels as $hotel){
-            if($hotel['parking'] == $parcheggio){
-                $temphotels[]=$hotel;
+            if($parcheggio == 'true'){
+                $parcheggio= true;
             }
+            elseif($parcheggio == 'false'){
+                $parcheggio= false;
+            }
+
+            foreach($filtered_hotels as $hotel){
+                if($hotel['parking'] == $parcheggio){
+                    $temphotels[]=$hotel;
+                }    
+            }  
+            $filtered_hotels= $temphotels;  
         }
-        $filtered_hotels= $temphotels;  
+        
     }
 
 
@@ -42,11 +49,14 @@
             <div class="row">
                 <div class="col">
                     <form action="index.php">
-                        <select name="parcheggio" id="parcheggio">
-                            <option value="">Seleziona se vuoi vedere i risultati con o senza parcheggio</option>
-                            <option value="true">Si</option>
-                            <option value="false">No</option>
-                        </select>
+                        <label for="parcheggio">Seleziona se vuoi vedere i risultati con o senza parcheggio</label>
+                            <select name="parcheggio" id="parcheggio">
+                                <option value="tutti">Tutti</option>
+                                <option value="true">Si</option>
+                                <option value="false">No</option>       
+                            </select>
+                        
+                        
                         <button type="submit">Cerca</button>
                     </form>
                 </div>
